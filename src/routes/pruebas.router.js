@@ -1,44 +1,56 @@
 const { Router } = require("express");
 
-const routerPruebas = Router();
+const pruebasRouter = Router();
 
-//Cookies_____________ Datos que se guardan del lado del cliente
-routerPruebas.get("/", (req, res) => {
-  res.render("cookies", {});
+const nombres = ["fede", "juan", "pedro"];
+//middleware con palabra
+pruebasRouter.param("nombre", (req, res, next, nombre) => {
+  if (!nombres.includes(nombre)) {
+    req.nombre = null;
+    res.send("No existe el parametro");
+  } else {
+    req.nombre = nombre;
+  }
+  next();
 });
 
-//Seteo de la cookie
-routerPruebas.get("/setcookie", (req, res) => {
-  //Da nombre de la cookie y valor. maxAge es el tiempo de vida en milisegundos
-  res.cookie("CookiePiola", "Esta es una cookie piola", { maxAge: 1000000 }).send("Cookie seteada");
+//minusculas y mayusculas = ([a-zA-Z]+)
+//á = %C3%A1
+//é = %C3%A9
+//í = %C3%AD
+//ó = %C3%B3
+//ú = %C3%BA
+//ü = %C3%BC
+//0 a 9 = 0-9
+
+//Se da por parametros las condiciones del string
+pruebasRouter.get("/nombre/:palabra([a-zA-Z%C3%A1%C3%A9%C3%AD%C3%B3%C3%BA%C3%BC0-9]+)", (req, res) => {
+  const { nombre } = req.nombre;
+  console.log(nombre);
+  res.send({
+    message: req.params.nombre,
+  });
 });
 
-//Lee las cookies
-routerPruebas.get("/getcookie", (req, res) => {
-  res.send(req.cookies);
+pruebasRouter.put("/params/:nombre([a-zA-Z%C3%A1%C3%A9%C3%AD%C3%B3%C3%BA%C3%BC0-9]+)", (req, res) => {
+  const { nombre } = req.nombre;
+  console.log(nombre);
+  res.send({
+    message: req.params.nombre,
+  });
 });
 
-//Borra una cookie
-routerPruebas.get("/deletecookie", (req, res) => {
-  //Se da el nombre de la cookie a borrar
-  res.clearCookie("CookiePiola").send("Cookie borrada");
+pruebasRouter.delete("/nombre/:palabra([a-zA-Z%C3%A1%C3%A9%C3%AD%C3%B3%C3%BA%C3%BC0-9]+)", (req, res) => {
+  const { nombre } = req.nombre;
+  console.log(nombre);
+  res.send({
+    message: req.params.nombre,
+  });
 });
 
-//Firma cookie para agregar seguridad. Desde app.use(cookieParser)
-routerPruebas.get("/setcookiefirmada", (req, res) => {
-  //con signed: true se firma la cookie
-  res.cookie("CookieFirmada", "Esta es una cookie firmada", { maxAge: 1000000, signed: true }).send("Cookie firmada");
+//Ruta de escape para cualquier ruta que no exista
+pruebasRouter.get("*", async (req, res) => {
+  res.status(404).send("404 Not found");
 });
 
-//Lee las cookies firmadas
-routerPruebas.get("/getcookiefirmada", (req, res) => {
-  res.send(req.signedCookies);
-});
-
-//Seteo de cookie de user firmada
-routerPruebas.post("/setcookieuser", (req, res) => {
-  const { username, email } = req.body;
-  res.cookie(username, email, { maxAge: 1000000, signed: true }).send({ mensaje: "Cookie user seteada" });
-});
-
-module.exports = routerPruebas;
+module.exports = pruebasRouter;

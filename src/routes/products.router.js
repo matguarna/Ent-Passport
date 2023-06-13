@@ -4,9 +4,10 @@ const ProductManagerMongo = require("../managerDaos/mongo/product.mongo");
 const productManagerMongo = new ProductManagerMongo();
 const productRouterMongo = Router();
 const { productModel } = require("../models/product.model");
+const passport = require("passport");
 
-//getProducts
-productRouterMongo.get("/", async (req, res) => {
+//getProducts - passport jwt
+productRouterMongo.get("/", passport.authenticate("jwt", { session: false }), async (req, res) => {
   try {
     const products = await productManagerMongo.getProducts();
     res.status(200).send({ status: "success", payload: products });

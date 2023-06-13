@@ -1,6 +1,6 @@
 //Archivo donde estan las rutas del server (app.js)
 const { Router } = require("express");
-const userRouter = require("./users.router");
+const UserRouter = require("./newUser.router"); //reemp users por newUser
 const fileProductRouter = require("./fileRoutes/fileproducts.router");
 const fileCartRouter = require("./fileRoutes/filecarts.router");
 const productRouterMongo = require("./products.router");
@@ -10,9 +10,12 @@ const { uploader } = require("../utils/multer");
 const sessionRouter = require("../routes/session.routes");
 const routerApp = Router();
 
+//instancia de newUserRouter
+const newUserRouter = new UserRouter();
+
 routerApp.use("/file/carts", fileCartRouter);
 routerApp.use("/file/products", fileProductRouter);
-routerApp.use("/api/usuarios", userRouter);
+routerApp.use("/api/usuarios", newUserRouter.getRouter());
 routerApp.use("/api/productos", productRouterMongo);
 routerApp.use("/api/carts", cartRouterMongo);
 routerApp.use("/views", viewsRouter);

@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const JWT_PRIVATE_KEY = "palabraJwtSecreta";
 
-//Genera el token de un usuario, sin datos sensibles
+//Genera el token de un usuario, sin datos sensibles. Se le pasa un objeto
 const generateToken = (user) => {
-  const token = jwt.sign({ user }, JWT_PRIVATE_KEY, { expiresIn: "1d" });
+  const token = jwt.sign(user, JWT_PRIVATE_KEY, { expiresIn: "1d" });
   return token;
 };
 

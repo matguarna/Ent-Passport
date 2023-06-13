@@ -60,8 +60,7 @@ passport.use(
     async (username, password, done) => {
       try {
         const userDB = await userModel.findOne({ email: username });
-        console.log("Encontre el USERDB en passport");
-        console.log(userDB);
+
         if (!userDB) return done(null, false);
 
         if (!isValidPassword(password, userDB)) return done(null, false);

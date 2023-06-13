@@ -8,12 +8,22 @@ const { uploader } = require("./utils/multer");
 const handlebars = require("express-handlebars");
 const { Server } = require("socket.io");
 const routerApp = require("./routes/routerApp"); //Agrupador de rutas
-const pruebasRouter = require("./routes/pruebas.router.js"); //Cookies
-const { initPassport, initPassportGithub } = require("./config/passport.config"); //Importamos initPassport
-const passport = require("passport"); //Importamos passport
+const cookiesRouter = require("./routes/cookies.router"); //Cookies
+const pruebasRouter = require("./routes/pruebas.router"); //Pruebas
+const { initPassportGithub } = require("./config/passport.config");
+const passport = require("passport");
+const { initPassport } = require("./passport-jwt/passportjwt.config");
+const dotenv = require("dotenv");
+
+dotenv.config({
+  path: "../Clase25",
+});
+const { config } = dotenv;
+console.log(config());
+
 //__________________________________________________________________
 const app = express();
-const PORT = 8080; //|| process.env.PORT;
+const PORT = process.env.PORT; //8080; ||
 const httpServer = app.listen(PORT, () => {
   console.log(`Escuchando puerto ${PORT}`);
 });
@@ -56,7 +66,7 @@ const fileStore = FileStore(session);
 app.use(
   session({
     store: create({
-      mongoUrl: "mongodb+srv://mguarna:pikachu1@cluster0.zbnzv1a.mongodb.net/DBpruebas?retryWrites=true&w=majority", //link de la DB
+      mongoUrl: "mongodb+srv://mguarna:pikachu1@cluster0.zbnzv1a.mongodb.net/DBpruebas?retryWrites=true&w=majority", //link de la DB. process.env.MONGO_URL_TEST
       mongoOptions: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -80,6 +90,9 @@ app.use(
 
 //cookieparser______________________________________________
 app.use(cookieParser("3NCR1PT4D4")); //3NCR1PT4D4 = Firma de la cookie
+app.use("/cookies", cookiesRouter);
+
+//Pruebas
 app.use("/pruebas", pruebasRouter);
 
 //multer______________________________________________
@@ -108,9 +121,10 @@ io.on("connection", (socket) => {
 });
 
 //passport_____________________________________
-initPassport(); //config del middleware
+// initPassport(); //config del middleware
 initPassportGithub();
 passport.use(passport.initialize());
-passport.use(passport.session());
+// passport.use(passport.session());
+initPassport(); //config de passport jwt
 
 app.use(routerApp);
