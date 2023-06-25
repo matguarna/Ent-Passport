@@ -1,7 +1,7 @@
 const { promises, appendFile, unlink, existsSync } = require("fs");
 const fs = promises;
 
-class ProductManager {
+class ProductManagerFile {
   constructor() {
     this.products = [];
     this.path = __dirname + "/productosDB.txt";
@@ -202,5 +202,5 @@ class ProductManager {
 //product.updateProducts(1, "stock", 500);
 
 module.exports = {
-  ProductManager,
+  ProductManagerFile,
 };

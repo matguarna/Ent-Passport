@@ -1,14 +1,16 @@
 const { Router } = require("express");
 const auth = require("../middlewares/autenticacion.middleware");
-const { userModel } = require("../models/user.model");
-const { createHash, isValidPassword } = require("../utils/bcryptHash");
+// const { userModel } = require("../models/user.model");
+// const { createHash, isValidPassword } = require("../utils/bcryptHash");
 const passport = require("passport");
-const { generateToken } = require("../utils/jwt");
+// const { generateToken } = require("../utils/jwt");
 const { passportCall } = require("../passport-jwt/passportCall");
 const { authorization } = require("../passport-jwt/authorizationJwtRole");
+require("dotenv").config();
 
 const sessionRouter = Router();
-const sessionController = require("../routes/controllers/session.controller");
+const { SessionController } = require("../routes/controllers/session.controller");
+const sessionController = new SessionController();
 
 //Render de login
 sessionRouter.get("/", sessionController.base);
@@ -20,7 +22,7 @@ sessionRouter.get("/counter", sessionController.counter);
 sessionRouter.post(
   "/login",
   passport.authenticate("login", {
-    failureRedirect: "http://localhost:8080/api/session/faillogin",
+    failureRedirect: `http://localhost:${process.env.PORT}/api/session/faillogin`,
   }),
   sessionController.login
 );
@@ -29,7 +31,7 @@ sessionRouter.post(
 sessionRouter.post(
   "/register",
   passport.authenticate("register", {
-    failureRedirect: "http://localhost:8080/api/session/failregister", //En caso de fallar, va a la ruta de escape especificada
+    failureRedirect: `http://localhost:${process.env.PORT}/api/session/failregister`, //En caso de fallar, va a la ruta de escape especificada
   }),
   sessionController.register
 );
@@ -42,12 +44,13 @@ sessionRouter.get("/failregister", sessionController.failregister);
 
 //Login con github
 sessionRouter.get("/github", passport.authenticate("github", { scope: ["user: email"] }));
+
 sessionRouter.get(
   "/githubcallback",
-  passport.authenticate("github", { failureRedirect: "http://localhost:8080/views/login" }),
+  passport.authenticate("github", { failureRedirect: `http://localhost:${process.env.PORT}/views/login` }),
   async (req, res) => {
     req.session.user = req.user;
-    res.redirect("http://localhost:8080/api/productos");
+    res.redirect(`http://localhost:${process.env.PORT}/api/productos`);
   }
 );
 

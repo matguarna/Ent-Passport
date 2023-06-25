@@ -78,9 +78,9 @@ const initPassportGithub = () => {
     "github",
     new GithubStrategy(
       {
-        clientID: "Iv1.3d5fae0b836c63e2", //process.env.GITHUB_CLIENT_ID,
-        clientSecret: "bafb8d940aacac768f2e7dc23e99277ef9c44c50", //process.env.GITHUB_CLIENT_SECRET,
-        callbackURL: "http://localhost:8080/api/session/githubcallback", //process.env.GITHUB_CALLBACK_URL,
+        clientID: process.env.GITHUB_CLIENT_ID, //"Iv1.3d5fae0b836c63e2", //
+        clientSecret: process.env.GITHUB_CLIENT_SECRET, //"bafb8d940aacac768f2e7dc23e99277ef9c44c50", //
+        callbackURL: process.env.GITHUB_CALLBACK_URL, //"http://localhost:8080/api/session/githubcallback", //
       },
       async (accessToken, refreshToken, profile, done) => {
         console.log("Profile:", profile);

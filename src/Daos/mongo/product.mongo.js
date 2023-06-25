@@ -1,17 +1,19 @@
-//Importamos el productModel
 const { productModel } = require("../../models/product.model");
 
-class ProductManagerMongo {
+class ProductDaoMongo {
+  constructor() {
+    this.productModel = productModel;
+  }
   async getProducts() {
     try {
-      return await productModel.find({}).lean();
+      return await this.productModel.find({}).lean();
     } catch (error) {
       console.log("getProducts Mongo", error);
     }
   }
   async getProductById(pid) {
     try {
-      return await productModel.findOne({ _id: pid });
+      return await this.productModel.findOne({ _id: pid });
     } catch (error) {
       console.log("getProductById Mongo", error);
     }
@@ -19,28 +21,22 @@ class ProductManagerMongo {
 
   async addProduct(newProduct) {
     try {
-      return await productModel.create(newProduct);
+      return await this.productModel.create(newProduct);
     } catch (error) {
       console.log("addProduct Mongo", error);
     }
   }
 
-  async updateProduct() {
-    try {
-    } catch (error) {
-      console.log("updateProduct Mongo", error);
-    }
+  async updateProduct(pid, updateProduct) {
+    return await this.productModel.findByIdAndUpdate({ _id: pid }, updateProduct, { new: true });
   }
-  async deleteProduct() {
-    try {
-    } catch (error) {
-      console.log("deleteProduct Mongo", error);
-    }
+  async deleteProduct(pid) {
+    return await this.productModel.findByIdAndDelete({ _id: pid });
   }
 
   async stagesProduct() {
     try {
-      const resultProd = await productModel.aggregate([
+      const resultProd = await this.productModel.aggregate([
         //stages
         //match: trae los productos que coincidan con la condicion dada
         {
@@ -78,6 +74,10 @@ class ProductManagerMongo {
       console.log("stagesProduct Mongo", error);
     }
   }
+
+  async paginateProduct(filtro, limite, pag) {
+    return await this.productModel.paginate(filtro, { limit: limite, page: pag, lean: true });
+  }
 }
 
-module.exports = ProductManagerMongo;
+module.exports = { ProductDaoMongo };

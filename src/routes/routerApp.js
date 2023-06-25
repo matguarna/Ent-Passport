@@ -8,14 +8,15 @@ const cartRouterMongo = require("./carts.router");
 const viewsRouter = require("./views.router");
 const { uploader } = require("../utils/multer");
 const sessionRouter = require("../routes/session.routes");
+const userRouter = require("../routes/users.router");
 const routerApp = Router();
 
-//instancia de newUserRouter
-const newUserRouter = new UserRouter();
+const newUserRouter = new UserRouter(); //instancia de newUserRouter
 
 routerApp.use("/file/carts", fileCartRouter);
 routerApp.use("/file/products", fileProductRouter);
-routerApp.use("/api/usuarios", newUserRouter.getRouter());
+routerApp.use("/api/newusuarios", newUserRouter.getRouter()); //newUser
+routerApp.use("/api/usuarios", userRouter); //userRouter
 routerApp.use("/api/productos", productRouterMongo);
 routerApp.use("/api/carts", cartRouterMongo);
 routerApp.use("/views", viewsRouter);

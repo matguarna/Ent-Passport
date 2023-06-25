@@ -1,7 +1,7 @@
 const { promises, appendFile, unlink, existsSync } = require("fs");
 const fs = promises;
 
-class CartManager {
+class CartManagerFile {
   constructor() {
     this.path = __dirname + "/cartsDB.txt";
     this.cartList = [];
@@ -82,7 +82,7 @@ class CartManager {
 }
 
 module.exports = {
-  CartManager,
+  CartManagerFile,
 };
 
 // const cartManager = new CartManager();

@@ -14,16 +14,16 @@ const { initPassportGithub } = require("./config/passport.config");
 const passport = require("passport");
 const { initPassport } = require("./passport-jwt/passportjwt.config");
 const dotenv = require("dotenv");
+const cors = require("cors"); //Cors: acepta peticiones extrañas
 
-dotenv.config({
-  path: "../Clase25",
-});
-const { config } = dotenv;
-console.log(config());
+//dotenv_________________________________
+dotenv.config();
+// const { config } = dotenv;
+// console.log(config());
 
 //__________________________________________________________________
 const app = express();
-const PORT = process.env.PORT; //8080; ||
+const PORT = process.env.PORT; //|| 8080;
 const httpServer = app.listen(PORT, () => {
   console.log(`Escuchando puerto ${PORT}`);
 });
@@ -31,10 +31,12 @@ const httpServer = app.listen(PORT, () => {
 const io = new Server(httpServer);
 
 //MONGOOSE : Se conecta a la DB
-objectConfig.connectDB();
+objectConfig.connectDB(); //Una instancia de la db
+// objectConfig.connectDB(); //Otra instancia de la db
 
 //__________________________________________________________________
 app.use(express.json());
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 
 //handlebars_______________________________________________
@@ -63,30 +65,30 @@ const fileStore = FileStore(session);
 // );
 
 //Session y connect-mongo_________________________
-app.use(
-  session({
-    store: create({
-      mongoUrl: "mongodb+srv://mguarna:pikachu1@cluster0.zbnzv1a.mongodb.net/DBpruebas?retryWrites=true&w=majority", //link de la DB. process.env.MONGO_URL_TEST
-      mongoOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-      ttl: 100000 * 10, //tiempo de vida de la sesion
-    }),
-    secret: "palabraSecreta", //Para firmar las sesiones
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-//express-session_______________________________
 // app.use(
 //   session({
+//     store: create({
+//       mongoUrl: process.env.MONGO_URL_TEST, //"mongodb+srv://mguarna:pikachu1@cluster0.zbnzv1a.mongodb.net/DBpruebas?retryWrites=true&w=majority", //link de la DB.
+//       mongoOptions: {
+//         useNewUrlParser: true,
+//         useUnifiedTopology: true,
+//       },
+//       ttl: 100000 * 10, //tiempo de vida de la sesion
+//     }),
 //     secret: "palabraSecreta", //Para firmar las sesiones
-//     resave: true, //Permite tener una sesion activa
-//     saveUninitialized: true, //Permite guardar cualquier tipo de sesion
+//     resave: false,
+//     saveUninitialized: false,
 //   })
 // );
+
+//express-session_______________________________
+app.use(
+  session({
+    secret: "palabraSecreta", //Para firmar las sesiones
+    resave: true, //Permite tener una sesion activa
+    saveUninitialized: true, //Permite guardar cualquier tipo de sesion
+  })
+);
 
 //cookieparser______________________________________________
 app.use(cookieParser("3NCR1PT4D4")); //3NCR1PT4D4 = Firma de la cookie

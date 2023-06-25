@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const { ProductManager } = require("../../managerDaos/fileSystem/fileProductManager");
+const { ProductManagerFile } = require("../../Daos/fileSystem/fileProductManager");
 
 const fileProductRouter = Router();
-const fileProductManager = new ProductManager();
+const fileProductManager = new ProductManagerFile();
 
 //GET. Trae los productos del archivo
 fileProductRouter.get("/", async (req, res) => {

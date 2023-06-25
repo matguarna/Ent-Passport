@@ -31,8 +31,8 @@ const userSchema = new Schema({
   },
 });
 
-//le agregamos el plugin al modelo
-// userSchema.plugin(mongoosePaginate);
+//Agrega el plugin al modelo
+userSchema.plugin(mongoosePaginate);
 
 //Se pasa por parametro la coleccion y schema. Se configura el objeto userModel con las propiedades configuradas arriba
 const userModel = model(collection, userSchema);

@@ -1,8 +1,8 @@
 const { Router } = require("express");
-const { CartManager } = require("../../managerDaos/fileSystem/fileCartManager");
+const { CartManagerFile } = require("../../Daos/fileSystem/fileCartManager");
 
 const fileCartRouter = Router();
-const fileCartManager = new CartManager();
+const fileCartManager = new CartManagerFile();
 
 // POST. Crea un nuevo carrito
 fileCartRouter.post("/", async (req, res) => {

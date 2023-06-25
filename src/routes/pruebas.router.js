@@ -1,7 +1,35 @@
 const { Router } = require("express");
+const { fork } = require("child_process"); //Importamos fork de child process
+
+const asd = require("../utils/operacioncompleja");
 
 const pruebasRouter = Router();
 
+//Pruebas de peticion bloqueante / no bloqueante
+function operacionCompleja() {
+  let result = 0;
+  for (let i = 0; i < 9e9; i++) {
+    result += i;
+  }
+  return result;
+}
+
+pruebasRouter.get("/sumablock", (req, res) => {
+  //funcion en /utils
+  const result = operacionCompleja();
+  res.send(`El resultado de la op es: ${result}`);
+});
+
+//Ejecuta el resultado de la funcion operacionCompleja() sin bloquear las demas peticiones. Desde utils/operacioncompleja escucha al process.on("message")
+pruebasRouter.get("/sumanoblock", (req, res) => {
+  const child = fork("./src/utils/operacioncompleja"); //crea un Proceso hijo
+  child.send("Inicia el proceso de calculo"); //Envia mensaje al process.on de operacioncompleja.js
+  child.on("message", (result) => {
+    res.send(`El resultado de la op es: ${result}`);
+  }); //captura el resultado del proceso padre
+});
+
+//Pruebas de middleware con palabra
 const nombres = ["fede", "juan", "pedro"];
 //middleware con palabra
 pruebasRouter.param("nombre", (req, res, next, nombre) => {

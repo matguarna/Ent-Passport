@@ -1,4 +1,5 @@
-const { userModel } = require("../../models/user.model");
+//const { userModel } = require("../../models/user.model");
+const { userService } = require("../../services");
 const { createHash, isValidPassword } = require("../../utils/bcryptHash");
 const { generateToken } = require("../../utils/jwt");
 
@@ -20,7 +21,7 @@ class SessionController {
   login = async (req, res) => {
     const { email, password } = req.body;
 
-    const userDB = await userModel.findOne({ email }).lean();
+    const userDB = await userService.loginSession(email);
     console.log("userDB del /login: ", userDB);
 
     //Validar passwd hasheada
@@ -47,8 +48,7 @@ class SessionController {
     userDBsinpass.role = "usuario";
 
     const access_token = generateToken(userDBsinpass);
-
-    // res.redirect("http://localhost:8080/api/productos/paginate");
+    // res.redirect(`http://localhost:${process.env.PORT}/api/productos/paginate`);
     res
       .cookie("appCookieToken", access_token, {
         maxAge: 60 * 60 * 100,
@@ -73,7 +73,7 @@ class SessionController {
       if (error) {
         return res.send({ status: "Error", error: error });
       } else {
-        res.redirect("http://localhost:8080/views/login");
+        res.redirect(`http://localhost:${process.env.PORT}/views/login`);
       }
     });
   };
@@ -89,4 +89,4 @@ class SessionController {
   };
 }
 
-module.exports = new SessionController();
+module.exports = { SessionController };
